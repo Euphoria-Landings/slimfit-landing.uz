@@ -46,11 +46,11 @@ export const Ingredients = () => {
 
         <div className="relative flex items-center justify-center min-h-[500px] sm:min-h-[600px] md:min-h-[800px] lg:min-h-[1000px]">
           {/* MARKAZIY CAPSULA */}
-          <div className="relative z-10 w-25 h-25 sm:w-48 sm:h-48 md:w-50 md:h-50 lg:w-70 lg:h-70 flex items-center justify-center">
-            <div className="absolute inset-0 bg-[#EFEFEF] rounded-full scale-125 shadow-inner" />
-            <div className="relative w-32 h-16 sm:w-36 sm:h-18 md:w-52 md:h-26 lg:w-80 lg:h-40 z-20">
+          <div className="relative z-10 w-25 h-25 sm:w-48 sm:h-48 md:w-50 md:h-50 lg:w-60 lg:h-60 flex items-center justify-center">
+            <div className="absolute inset-0 bg-[#AAFDA5] rounded-full scale-125 shadow-inner" />
+            <div className="relative w-32 h-16 sm:w-36 sm:h-18 md:w-52 md:h-26 lg:w-100 lg:h-50 z-20">
               <Image
-                src="/capsula-copy.png"
+                src="/slimfit.png"
                 alt="Slimfit Capsule"
                 fill
                 className="object-contain drop-shadow-2xl"

@@ -67,59 +67,7 @@ export const Features = () => {
               />
             </motion.div>
 
-            {/* --- EKSTREMAL KATTA KAPSULALAR --- */}
-
-            {/* Kapsula 1 (Tepada) */}
-            <motion.div
-              animate={{ y: [0, -30, 0], rotate: [0, 15, 0] }}
-              transition={{ repeat: Infinity, duration: 5, ease: "easeInOut" }}
-              className="absolute -top-5 right-0 md:top-10 md:right-10 w-28 h-28 md:w-48 md:h-48 z-20 pointer-events-none"
-            >
-              <Image
-                src="/capsula.png"
-                alt="Capsule Large"
-                fill
-                className="object-contain drop-shadow-[0_25px_50px_rgba(0,0,0,0.2)]"
-              />
-            </motion.div>
-
-            {/* Kapsula 2 (O'rtada) */}
-            <motion.div
-              animate={{ x: [0, 20, 0], y: [0, 40, 0], rotate: [0, -20, 0] }}
-              transition={{
-                repeat: Infinity,
-                duration: 6,
-                ease: "easeInOut",
-                delay: 1,
-              }}
-              className="absolute top-1/2 -left-5 md:left-0 w-24 h-24 md:w-40 md:h-40 z-20 pointer-events-none"
-            >
-              <Image
-                src="/capsula.png"
-                alt="Capsule Medium"
-                fill
-                className="object-contain drop-shadow-[0_25px_50px_rgba(0,0,0,0.2)]"
-              />
-            </motion.div>
-
-            {/* Kapsula 3 (Pastda) */}
-            <motion.div
-              animate={{ y: [0, -25, 0], rotate: [10, 30, 10] }}
-              transition={{
-                repeat: Infinity,
-                duration: 4.5,
-                ease: "easeInOut",
-                delay: 0.5,
-              }}
-              className="absolute bottom-10 right-10 md:bottom-20 md:right-32 w-20 h-20 md:w-36 md:h-36 z-20 pointer-events-none"
-            >
-              <Image
-                src="/capsula.png"
-                alt="Capsule Small"
-                fill
-                className="object-contain drop-shadow-[0_25px_50px_rgba(0,0,0,0.2)]"
-              />
-            </motion.div>
+           
           </div>
         </div>
       </div>

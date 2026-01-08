@@ -6,23 +6,23 @@ import { OrderModal } from "@/widgets/order/ui/OrderModal"; // Yo'lni loyihangiz
 
 const features = [
   {
-    image: "/rasm1.png",
+    image: "/nok.png",
     text: "Tana vaznini nazorat qilishni xohlasa",
   },
   {
-    image: "/rasm2.png",
+    image: "/anor.png",
     text: "Ongli ovqatlanishga intilsa",
   },
   {
-    image: "/rasm3.png",
+    image: "/modda.png",
     text: "Modda almashinuvini qo'llab-quvvatlashni xohlasa",
   },
   {
-    image: "/rasm4.png",
+    image: "/smile.png",
     text: "O'z farovonligiga e'tibor bersa",
   },
   {
-    image: "/rasm5.png",
+    image: "/laptop.png",
     text: "Kam harakatli hayot tarzi kechirsa",
   },
 ];
