@@ -42,23 +42,28 @@ export const OrderModal = ({
   };
 
   const progress = (formData.phone.replace(/\s/g, "").length / 13) * 100;
+const handleSubmit = async (e: React.FormEvent) => {
+  e.preventDefault();
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (formData.phone.length < 17) {
-      toast.error("Raqamni to'liq kiriting!", { position: "bottom-right" });
-      return;
-    }
-    setLoading(true);
-    // Simulyatsiya (Backendga tayyor data boradi)
-    setTimeout(() => {
-      setLoading(false);
-      setStep(2);
-      toast.success("Muvaffaqiyatli qabul qilindi!", {
-        position: "bottom-right",
-      });
-    }, 2000);
-  };
+  // Faqat raqamlarni ajratib olamiz (masalan: 998901234567)
+  const digitsOnly = formData.phone.replace(/\D/g, "");
+
+  // O'zbekiston raqami 998 bilan birga jami 12 ta raqam bo'lishi shart
+  if (digitsOnly.length !== 12) {
+    toast.error("Raqamni to'liq kiriting!", { position: "bottom-right" });
+    return;
+  }
+
+  setLoading(true);
+  // Simulyatsiya (Backendga tayyor data boradi)
+  setTimeout(() => {
+    setLoading(false);
+    setStep(2);
+    toast.success("Muvaffaqiyatli qabul qilindi!", {
+      position: "bottom-right",
+    });
+  }, 2000);
+};
 
   if (!isOpen) return null;
 
