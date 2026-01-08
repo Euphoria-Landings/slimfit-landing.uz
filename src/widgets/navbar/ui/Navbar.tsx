@@ -1,135 +1,197 @@
 "use client";
-
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import Link from "next/link";
 import Image from "next/image";
-import { Menu, X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { HiX } from "react-icons/hi";
+import { OrderModal } from "@/widgets/order/ui/OrderModal";
+
+const navLinks = [
+  { name: "Asosiy", href: "#home" },
+  { name: "Tarkib", href: "#ingredients" },
+  { name: "Sinovlar", href: "#results" },
+  { name: "Foyda", href: "#benefits" },
+  { name: "FAQ", href: "#faq" },
+];
 
 export const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const toggleMenu = () => setIsOpen(!isOpen);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
 
-  const navLinks = [
-    { name: "Tarkibi", href: "#tarkibi" },
-    { name: "Foydasi", href: "#foydasi" },
-    { name: "Natijalar", href: "#natijalar" },
-  ];
+  useEffect(() => {
+    const handleScroll = () => setScrolled(window.scrollY > 50);
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  useEffect(() => {
+    if (isOpen || isModalOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "unset";
+    }
+  }, [isOpen, isModalOpen]);
 
   return (
-    <nav className="w-full bg-[#F4F9F4] sticky top-0 z-50">
-      {/* Lentalar uchun alohida konteyner - asosiy navni qirqib qo'ymaydi */}
-      <div className="absolute inset-0 pointer-events-none overflow-hidden z-0">
-        <div className="absolute left-[45%] top-[30px] w-[300px] md:w-[600px] h-[200px] md:h-[400px] rotate-[-15deg]">
-          <Image src="/bottom.png" alt="tape" fill className="object-contain" />
-        </div>
-        <div className="absolute right-[10%] md:right-[40%] top-[-80px] md:top-[-180px] w-[350px] md:w-[700px] h-[250px] md:h-[500px] rotate-[10deg]">
-          <Image
-            src="/metrtop.png"
-            alt="tape"
-            fill
-            className="object-contain"
-          />
-        </div>
-      </div>
-
-      <div className="max-w-[1100px] mx-auto w-[90%] h-20 flex justify-between items-center relative z-20">
-        {/* LOGO */}
-        <div className="relative h-10 w-32 md:h-14 md:w-40 flex items-center">
-          <Image
-            src="/logo.png"
-            alt="Slimfit Logo"
-            fill
-            className="object-contain object-left"
-            priority
-          />
-        </div>
-
-        {/* DESKTOP MENU */}
-        <div className="hidden md:flex items-center gap-10">
-          {navLinks.map((link) => (
-            <a
-              key={link.name}
-              href={link.href}
-              className="text-sm font-black text-gray-800 uppercase tracking-widest hover:text-brandGreen transition-all duration-300"
-            >
-              {link.name}
-            </a>
-          ))}
-        </div>
-
-        {/* BUTTON & BURGER */}
-        <div className="flex items-center gap-4">
-          <button className="hidden md:block bg-brandGreen text-white px-8 py-3 rounded-full text-xs font-black uppercase tracking-widest shadow-[0_5px_0_0_#1e5a36] hover:shadow-[0_2px_0_0_#1e5a36] hover:translate-y-[3px] active:translate-y-[5px] active:shadow-none transition-all duration-150">
-            Buyurtma berish
-          </button>
-
-          <button
-            onClick={toggleMenu}
-            className="md:hidden p-2 text-brandGreen hover:bg-white/50 rounded-full transition-colors"
-          >
-            <Menu size={32} strokeWidth={3} />
-          </button>
-        </div>
-      </div>
-
-      {/* MOBILE SIDE MODAL */}
+    <>
+      {/* 1. MOBILE MENU - HEADERDAN TASHQARIDA (Z-INDEX MUAMMOSINI YECHISH UCHUN) */}
       <AnimatePresence>
         {isOpen && (
-          <>
+          <div className="fixed inset-0 z-[9999] lg:hidden">
+            {/* Yashilsifat xira fon */}
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              onClick={toggleMenu}
-              className="fixed inset-0 bg-black/60 backdrop-blur-md z-[60] md:hidden"
+              onClick={() => setIsOpen(false)}
+              className="absolute inset-0 bg-green-950/60 backdrop-blur-md"
             />
+
+            {/* Panel */}
             <motion.div
               initial={{ x: "100%" }}
               animate={{ x: 0 }}
               exit={{ x: "100%" }}
-              transition={{ type: "spring", damping: 20, stiffness: 150 }}
-              className="fixed top-0 right-0 h-full w-[85%] bg-[#F4F9F4] z-[70] shadow-2xl p-10 flex flex-col md:hidden"
+              transition={{ type: "spring", damping: 25, stiffness: 200 }}
+              className="absolute top-0 right-0 h-full w-[85%] bg-white p-8 pt-32 flex flex-col shadow-[-20px_0_60px_rgba(0,0,0,0.3)]"
             >
-              <div className="flex justify-between items-center mb-16">
-                <div className="relative h-8 w-24">
-                  <Image
-                    src="/logo.png"
-                    alt="Logo"
-                    fill
-                    className="object-contain"
-                  />
-                </div>
-                <button
-                  onClick={toggleMenu}
-                  className="p-2 bg-white rounded-full shadow-md text-gray-800"
-                >
-                  <X size={24} strokeWidth={3} />
-                </button>
+              <button
+                onClick={() => setIsOpen(false)}
+                className="absolute top-8 right-8 w-12 h-12 flex items-center justify-center bg-slate-100 rounded-full text-black"
+              >
+                <HiX size={30} />
+              </button>
+
+              <div className="mb-12 relative w-60 h-36">
+                <Image
+                  src="/logos.png"
+                  alt="Logo"
+                  fill
+                  className="object-cover"
+                />
               </div>
 
-              <div className="flex flex-col gap-8">
-                {navLinks.map((link) => (
-                  <a
+              <ul className="flex flex-col gap-8">
+                {navLinks.map((link, idx) => (
+                  <motion.li
                     key={link.name}
-                    href={link.href}
-                    onClick={toggleMenu}
-                    className="text-3xl font-[900] text-gray-900 uppercase tracking-tighter hover:text-brandGreen transition-colors flex items-center justify-between group"
+                    initial={{ opacity: 0, x: 20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: idx * 0.1 }}
                   >
-                    {link.name}
-                    <div className="h-1 w-0 bg-brandGreen transition-all group-hover:w-10" />
-                  </a>
+                    <Link
+                      href={link.href}
+                      onClick={() => setIsOpen(false)}
+                      className="text-xl font-[1000] text-black uppercase tracking-tighter"
+                    >
+                      {link.name}
+                    </Link>
+                  </motion.li>
                 ))}
-              </div>
+              </ul>
 
-              <div className="mt-auto">
-                <button className="w-full bg-brandGreen text-white py-6 rounded-2xl text-xl font-black uppercase shadow-[0_8px_0_0_#1e5a36] active:shadow-none active:translate-y-[8px] transition-all">
-                  Buyurtma berish
+              <div className="mt-auto pb-6">
+                <button
+                  onClick={() => {
+                    setIsOpen(false);
+                    setIsModalOpen(true);
+                  }}
+                  className="relative group overflow-hidden w-full bg-green-600 text-white py-6 rounded-2xl flex items-center justify-center text-xl font-[1000] uppercase tracking-widest shadow-2xl"
+                >
+                  <span className="z-10">Sotib olish</span>
+                  <motion.div
+                    animate={{ x: ["-200%", "200%"] }}
+                    transition={{
+                      repeat: Infinity,
+                      duration: 2,
+                      ease: "linear",
+                    }}
+                    className="absolute top-0 h-full w-[60px] bg-white/30 skew-x-[-25deg] blur-lg"
+                  />
                 </button>
               </div>
             </motion.div>
-          </>
+          </div>
         )}
       </AnimatePresence>
-    </nav>
+
+      {/* 2. TOP DECORATION */}
+      <div className="absolute -top-[80px] right-[5%] w-[90%] md:-top-[150px] md:right-[12%] md:w-[45%] h-[250px] md:h-[450px] pointer-events-none z-[1] overflow-hidden">
+        <div className="relative w-full h-full">
+          <Image
+            src="/metrtop.png"
+            alt="Deco"
+            fill
+            className="object-contain object-right-top scale-125"
+            priority
+          />
+        </div>
+      </div>
+
+      {/* 3. ASOSIY HEADER */}
+      <header
+        className={`fixed top-0 left-0 w-full z-[1000] transition-all duration-500 ${
+          scrolled ? "bg-white shadow-lg py-2" : "bg-transparent py-8"
+        }`}
+      >
+        <div className="container mx-auto px-4 md:px-6 flex items-center justify-between">
+          <Link href="/" className="relative">
+            <div className="relative w-[180px] h-[70px] md:w-[250px] md:h-[80px]">
+              <Image
+                src="/logos.png"
+                alt="Logo"
+                fill
+                className="object-contain"
+                priority
+              />
+            </div>
+          </Link>
+
+          <nav className="hidden lg:flex items-center gap-10">
+            <ul className="flex items-center gap-8">
+              {navLinks.map((link) => (
+                <li key={link.name}>
+                  <Link
+                    href={link.href}
+                    className="text-[14px] font-black uppercase text-slate-800 hover:text-green-600 transition-colors"
+                  >
+                    {link.name}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+            <button
+              onClick={() => setIsModalOpen(true)}
+              className="group relative overflow-hidden bg-green-600 px-10 py-4 rounded-full text-[13px] font-black uppercase text-white shadow-xl active:scale-95"
+            >
+              <span className="relative z-10">Sotib olish</span>
+              <motion.div
+                animate={{ x: ["-150%", "150%"] }}
+                transition={{
+                  repeat: Infinity,
+                  duration: 2,
+                  ease: "linear",
+                  repeatDelay: 1,
+                }}
+                className="absolute top-0 h-full w-[40px] bg-white/40 skew-x-[-20deg] blur-md"
+              />
+            </button>
+          </nav>
+
+          <button
+            onClick={() => setIsOpen(true)}
+            className="lg:hidden w-14 h-14 bg-slate-900 rounded-xl flex flex-col items-center justify-center gap-1.5 shadow-2xl border-2 border-green-500"
+          >
+            <span className="w-8 h-1.5 bg-green-500 rounded-full" />
+            <span className="w-10 h-1.5 bg-white rounded-full" />
+            <span className="w-6 h-1.5 bg-green-500 rounded-full self-end mr-2" />
+          </button>
+        </div>
+      </header>
+
+      {/* 4. ORDER MODAL (ENG TEPADA TURADI) */}
+      <OrderModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
+    </>
   );
 };

@@ -1,25 +1,21 @@
 "use client";
-
 import React from "react";
 import Image from "next/image";
 import { motion } from "framer-motion";
 
 const resultsData = [
   {
-    id: 1,
-    image: "/result1.png", // Rasmlaringni public papkasiga shu nomda qo'y
+    image: "/sharx1.png", // Rasm yo'lini o'rnating
     weight: "-20 kg",
     duration: "2 oylik natija",
   },
   {
-    id: 2,
-    image: "/result2.png",
+    image: "/sharx2.png",
     weight: "-32 kg",
     duration: "4 oylik natija",
   },
   {
-    id: 3,
-    image: "/result3.png",
+    image: "/sharx3.png",
     weight: "-25 kg",
     duration: "2 oylik natija",
   },
@@ -27,45 +23,75 @@ const resultsData = [
 
 export const Results = () => {
   return (
-    <section id="natijalar" className="w-full py-20 bg-white">
-      <div className="max-w-[1100px] mx-auto w-[90%]">
+    <section className="py-2 bg-slate-50 overflow-hidden" id="results">
+      <div className="container mx-auto px-4">
         {/* SARLAVHA */}
-        <h2 className="text-3xl md:text-[40px] font-[900] text-gray-800 mb-12 tracking-tight">
-          Avvalgi va keyingi suratlar + sharhlar
-        </h2>
+        <div className="text-center mb-20">
+          <motion.h2
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-[32px] md:text-[50px] font-[1000] text-slate-900 uppercase tracking-tighter leading-tight"
+          >
+            Avvalgi va keyingi <br className="md:hidden" /> suratlar + sharhlar
+          </motion.h2>
+          <motion.div
+            initial={{ width: 0 }}
+            whileInView={{ width: "120px" }}
+            className="h-2 bg-green-500 mx-auto mt-6 rounded-full"
+          />
+        </div>
 
-        {/* NATIJALAR GRID */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
-          {resultsData.map((item, idx) => (
+        {/* NATIJALAR SETKASI */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-10 lg:gap-14">
+          {resultsData.map((item, index) => (
             <motion.div
-              key={item.id}
+              key={index}
               initial={{ opacity: 0, scale: 0.9 }}
               whileInView={{ opacity: 1, scale: 1 }}
+              transition={{ delay: index * 0.2 }}
               viewport={{ once: true }}
-              transition={{ delay: idx * 0.2 }}
-              className="flex flex-col relative group"
+              className="bg-white rounded-[40px] overflow-hidden shadow-2xl shadow-slate-200 border border-slate-100 group"
             >
-              {/* RASM KONTEYNERI */}
-              <div className="relative w-full aspect-[4/5] overflow-hidden rounded-t-lg shadow-md">
-                {/* Bu yerda 1x1 Before/After rasm turadi */}
-                <div className="w-full h-full bg-gray-100 flex items-center justify-center text-gray-400 italic text-sm">
-                  [Before/After Image {item.id}]
-                  {/* <Image src={item.image} fill className="object-cover" alt="result" /> */}
-                </div>
+              {/* Rasm konteyneri */}
+              <div className="relative aspect-[4/5] w-full overflow-hidden">
+                <Image
+                  src={item.image}
+                  alt={`Slimfit natija ${item.weight}`}
+                  fill
+                  sizes="(max-width: 768px) 100vw, 33vw"
+                  className="object-cover group-hover:scale-105 transition-transform duration-700"
+                />
               </div>
 
-              {/* YASHIL NATIJA BLOKI (Linear Gradient) */}
-              <div className="w-full bg-gradient-to-r from-[#9CFF9C] to-[#5BA35B] py-4 flex flex-col items-center justify-center text-center">
-                <span className="text-3xl md:text-4xl font-[900] text-[#1A1A1A] leading-none">
-                  {item.weight}
-                </span>
-                <span className="text-xs md:text-sm font-bold text-[#1A1A1A]/80 uppercase mt-1 tracking-wider">
-                  {item.duration}
-                </span>
+              {/* Pastki yashil natija bloki */}
+              <div className="bg-gradient-to-r from-[#97FF97] via-[#74E374] to-[#56A265] py-8 px-6 text-center">
+                <motion.div
+                  initial={{ opacity: 0, y: 10 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  className="space-y-1"
+                >
+                  <h4 className="text-[42px] md:text-[52px] font-[1000] text-slate-900 leading-none">
+                    {item.weight}
+                  </h4>
+                  <p className="text-[14px] md:text-[16px] font-black text-slate-900/80 uppercase tracking-widest">
+                    {item.duration}
+                  </p>
+                </motion.div>
               </div>
             </motion.div>
           ))}
         </div>
+
+        {/* QO'SHIMCHA ISHONCH MATNI */}
+        <motion.p
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          className="mt-16 text-center text-slate-500 font-bold text-sm md:text-base max-w-2xl mx-auto italic"
+        >
+          *Natijalar individual xususiyatlarga bog'liq bo'lib, muvozanatli
+          ovqatlanish bilan birga erishilgan.
+        </motion.p>
       </div>
     </section>
   );

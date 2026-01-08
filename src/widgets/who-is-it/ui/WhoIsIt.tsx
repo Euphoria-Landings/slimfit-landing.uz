@@ -1,114 +1,140 @@
 "use client";
-
-import React from "react";
+import React, { useState } from "react";
+import Image from "next/image";
 import { motion } from "framer-motion";
+import { OrderModal } from "@/widgets/order/ui/OrderModal"; // Yo'lni loyihangizga qarab tekshiring
 
-const categories = [
+const features = [
   {
-    id: 1,
-    title: "fitgirl",
-    desc: "Tana vaznini nazoratini xohlasa",
-    icon: "🧘‍♀️", // Bu yerda SVG yoki rasm qo'yishing mumkin
+    image: "/rasm1.png",
+    text: "Tana vaznini nazorat qilishni xohlasa",
   },
   {
-    id: 2,
-    title: "ovqat",
-    desc: "Oqilona ovqatlanishga intilsa",
-    icon: "🥗",
+    image: "/rasm2.png",
+    text: "Ongli ovqatlanishga intilsa",
   },
   {
-    id: 3,
-    title: "modda",
-    desc: "Modda almashinuvi sekin bo'lsa",
-    icon: "🧬",
+    image: "/rasm3.png",
+    text: "Modda almashinuvini qo'llab-quvvatlashni xohlasa",
   },
   {
-    id: 4,
-    title: "vazn",
-    desc: "Ortiqcha vazndan xalos bo'lmoqchi",
-    icon: "🏃‍♂️",
+    image: "/rasm4.png",
+    text: "O'z farovonligiga e'tibor bersa",
   },
   {
-    id: 5,
-    title: "lazy",
-    desc: "Kam harakatli hayot tarzini kechirsa",
-    icon: "🛋️",
+    image: "/rasm5.png",
+    text: "Kam harakatli hayot tarzi kechirsa",
   },
 ];
 
 export const WhoIsIt = () => {
-  return (
-    <section id="foydasi" className="w-full py-20 bg-white">
-      <div className="max-w-[1100px] mx-auto w-[90%]">
-        {/* TEKST QISMI */}
-        <div className="space-y-6 mb-16">
-          <p className="text-gray-600 font-medium text-sm md:text-base leading-relaxed">
-            <span className="font-black text-black uppercase">
-              Slimfit — Slimfit —
-            </span>{" "}
-            bu muvozanatli ovqatlanish va faol hayot tarzi doirasida olingan
-            natijani mustahkamlashga yordam beradi. Mahsulot tarkibidagi tabiiy
-            komponentlar yog&apos;larni parchalash jarayonini tezlashtiradi.
-          </p>
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
-          <h2 className="text-4xl md:text-5xl font-[900] text-gray-900 tracking-tighter">
-            Slimfit kimga mos keladi?
-          </h2>
+  return (
+    <section className="py-24 bg-white relative overflow-hidden" id="results">
+      <div className="container mx-auto px-4 relative z-10">
+        {/* SARLAVHA */}
+        <div className="mb-20">
+          <motion.h2
+            initial={{ opacity: 0, x: -30 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            className="text-[36px] md:text-[56px] font-[1000] text-slate-900 leading-tight uppercase tracking-tighter"
+          >
+            Slimfit kimga <br className="hidden md:block" /> mos keladi?
+          </motion.h2>
+          <div className="w-24 h-2 bg-green-600 mt-6 rounded-full" />
         </div>
 
-        {/* KARTOCHKALAR - 5 TALIK SET */}
-        <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
-          {categories.map((item, idx) => (
+        {/* IKONKALAR GRIDI */}
+        <div className="grid grid-cols-2 md:grid-cols-5 gap-6 md:gap-10 mb-24">
+          {features.map((item, index) => (
             <motion.div
-              key={item.id}
+              key={index}
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
+              transition={{ delay: index * 0.1, duration: 0.5 }}
               viewport={{ once: true }}
-              transition={{ delay: idx * 0.1 }}
-              className="group relative bg-white border border-gray-100 rounded-[32px] p-6 flex flex-col items-center text-center hover:shadow-2xl hover:shadow-green-900/10 transition-all duration-500 cursor-pointer h-full"
+              className="group flex flex-col items-center"
             >
-              {/* Ikonka foni (Dovira shaklidagi) */}
-              <div className="w-20 h-20 rounded-full bg-gray-50 flex items-center justify-center mb-6 group-hover:bg-brandGreen/10 transition-colors duration-500 shadow-inner">
-                <span className="text-3xl">{item.icon}</span>
+              <div className="relative w-full aspect-square max-w-[180px] rounded-full overflow-hidden mb-6 border-[6px] border-slate-100 group-hover:border-green-500 transition-all duration-500 shadow-xl">
+                <Image
+                  src={item.image}
+                  alt={item.text}
+                  fill
+                  sizes="(max-width: 768px) 50vw, 20vw"
+                  className="object-cover group-hover:scale-110 transition-transform duration-700"
+                />
               </div>
-
-              {/* Matnlar */}
-              <h4 className="text-xs font-black uppercase tracking-widest text-gray-400 mb-2 group-hover:text-brandGreen transition-colors">
-                {item.title}
-              </h4>
-              <p className="text-[13px] font-bold text-gray-800 leading-tight">
-                {item.desc}
+              <p className="text-center text-[14px] md:text-[16px] font-black text-slate-900 leading-tight uppercase tracking-tight">
+                {item.text}
               </p>
             </motion.div>
           ))}
         </div>
 
-        {/* PASTDAGI TEKST VA TUGMA */}
-        <div className="mt-16 space-y-10">
-          <p className="text-gray-600 font-medium text-sm md:text-base leading-relaxed max-w-4xl">
-            <span className="font-black text-black uppercase">
-              Slimfit — Slimfit —
-            </span>{" "}
-            bu muvozanatli ovqatlanish va faol hayot tarzi doirasida olingan
-            natijani mustahkamlashga yordam beradi. Mahsulot tarkibi dori
-            vositasi emas, balki biologik faol qo&apos;shimcha hisoblanadi.
-          </p>
-
-          <p className="italic text-red-500 font-bold text-sm">
-            Slimfit dori vositasi emas, parhez taomlariga qo&apos;shimcha
-            hisoblanadi.
-          </p>
-
-          <div className="flex justify-center md:justify-start">
-            <button className="relative overflow-hidden bg-gradient-to-b from-[#FFD645] to-[#FFB800] px-12 py-5 rounded-full shadow-[0_8px_0_0_#D49A00] active:shadow-none active:translate-y-[8px] transition-all duration-100 group">
-              <div className="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white/60 to-transparent -translate-x-full animate-shimmer pointer-events-none" />
-              <span className="relative z-10 text-xl font-black text-[#1A1A1A] uppercase tracking-wider">
-                Ariza qoldirish
-              </span>
-            </button>
+        {/* INFO BLOK */}
+        <div className="max-w-5xl mx-auto border-y-2 border-slate-900/5 py-12 mb-20">
+          <div className="space-y-6 text-center">
+            <p className="text-[16px] md:text-[20px] text-slate-900 font-extrabold leading-relaxed">
+              <span className="text-green-600">Slimfit —</span> bu muvazanatli
+              ovqatlanish va faol hayot tarzi doirasida tana vaznini nazorat
+              qilishni qo'llab-quvvatlash uchun ishlab chiqilgan oziq-ovqatga
+              biologik faol qo'shimcha.
+            </p>
+            <p className="text-[14px] md:text-[16px] text-slate-900 font-bold opacity-70 italic">
+              Slimfit dori vositasi emas va semirishni davolash uchun
+              mo'ljallanmagan.
+            </p>
           </div>
         </div>
+
+        {/* CTA SECTION */}
+        <div className="flex flex-col items-center space-y-10">
+          <motion.h3
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            className="text-[22px] md:text-[34px] font-black text-slate-900 text-center uppercase tracking-tight"
+          >
+            Arizangizni qoldiring va{" "}
+            <span className="text-green-600">100% chegirma</span> oling!
+          </motion.h3>
+
+          <motion.button
+            onClick={() => setIsModalOpen(true)}
+            whileHover={{
+              scale: 1.05,
+              boxShadow: "0 30px 60px rgba(0,0,0,0.15)",
+            }}
+            whileTap={{ scale: 0.95 }}
+            className="group relative overflow-hidden px-12 py-6 md:px-24 md:py-8 bg-[#FFD840] rounded-2xl shadow-2xl transition-all border-b-8 border-[#D4A017]"
+          >
+            <span className="relative z-10 text-[24px] md:text-[42px] font-[1000] text-slate-900 uppercase tracking-tighter">
+              Ariza qoldirish
+            </span>
+
+            {/* AVTOMATIK YALTIROQ EFFEKT (Har 2 soniyada) */}
+            <motion.div
+              animate={{
+                left: ["-100%", "200%"],
+              }}
+              transition={{
+                repeat: Infinity,
+                duration: 2,
+                ease: "easeInOut",
+                repeatDelay: 0.5,
+              }}
+              className="absolute inset-y-0 w-[100px] bg-gradient-to-r from-transparent via-white/70 to-transparent skew-x-[-25deg] z-0"
+            />
+          </motion.button>
+        </div>
       </div>
+
+      {/* MODAL OYNA */}
+      <OrderModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
+
+      {/* FON BEZAGI */}
+      <div className="absolute top-0 right-0 w-1/3 h-full bg-slate-50/50 -skew-x-12 translate-x-1/2 -z-0" />
     </section>
   );
 };
