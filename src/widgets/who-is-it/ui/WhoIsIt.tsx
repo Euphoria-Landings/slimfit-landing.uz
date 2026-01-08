@@ -130,7 +130,7 @@ export const WhoIsIt = () => {
         </div>
       </div>
 
-      {/* MODAL OYNA */}
+      
       <OrderModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
 
       {/* FON BEZAGI */}
