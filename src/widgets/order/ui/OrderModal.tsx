@@ -114,9 +114,13 @@ export const OrderModal = ({
                   </label>
                   <input
                     required
+                    type="tel" // Brauzerga bu telefon raqami ekanini bildiradi
+                    inputMode="numeric" // Mobil telefonda faqat raqamlar klaviaturasini ochadi
+                    pattern="[0-9]*" // Ba'zi eski qurilmalar uchun qo'shimcha cheklov
                     className="w-full p-4 mt-1 bg-slate-50 border-2 border-transparent focus:border-yellow-400 rounded-2xl outline-none font-bold text-black"
                     value={formData.phone}
                     onChange={handlePhoneChange}
+                    placeholder="+998 90 123 45 67"
                   />
                 </div>
                 <button
