@@ -5,7 +5,7 @@ import { motion } from "framer-motion";
 
 const resultsData = [
   {
-    image: "/sharx1.png", // Rasm yo'lini o'rnating
+    image: "/sharx1.png",
     weight: "-20 kg",
     duration: "2 oylik natija",
   },
@@ -23,75 +23,67 @@ const resultsData = [
 
 export const Results = () => {
   return (
-    <section className="py-2 bg-slate-50 overflow-hidden" id="results">
-      <div className="container mx-auto px-4">
+    <section
+      className="py-12 md:py-24 bg-slate-50 overflow-hidden"
+      id="results"
+    >
+      <div className="container mx-auto px-0 md:px-4">
         {/* SARLAVHA */}
-        <div className="text-center mb-20">
+        <div className="text-center mb-12 md:mb-20 px-4">
           <motion.h2
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="text-[32px] md:text-[50px] font-[1000] text-slate-900 uppercase tracking-tighter leading-tight"
+            className="text-[26px] md:text-[52px] font-[1000] text-slate-900 uppercase tracking-tighter leading-tight"
           >
-            Avvalgi va keyingi <br className="md:hidden" /> suratlar + sharhlar
+            Natijalar va sharhlar
           </motion.h2>
-          <motion.div
-            initial={{ width: 0 }}
-            whileInView={{ width: "120px" }}
-            className="h-2 bg-green-500 mx-auto mt-6 rounded-full"
-          />
+          <div className="w-16 md:w-24 h-1.5 bg-green-500 mx-auto mt-4 rounded-full" />
         </div>
 
-        {/* NATIJALAR SETKASI */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-10 lg:gap-14">
+        {/* NATIJALAR GRIDI */}
+        <div className="flex flex-col md:flex-row md:flex-wrap justify-center items-center gap-6 md:gap-10">
           {resultsData.map((item, index) => (
             <motion.div
               key={index}
-              initial={{ opacity: 0, scale: 0.9 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              transition={{ delay: index * 0.2 }}
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ delay: index * 0.1 }}
               viewport={{ once: true }}
-              className="bg-white rounded-[40px] overflow-hidden shadow-2xl shadow-slate-200 border border-slate-100 group"
+              // Mobil: w-[65%] (biroz kattalashtirildi), Desktop: max-w-[360px]
+              // Ikkala holatda ham burchaklar o'tkir (rounded-none)
+              className="w-[65%] md:w-full md:max-w-[360px] bg-white rounded-none overflow-hidden shadow-2xl border border-slate-100 group"
             >
               {/* Rasm konteyneri */}
-              <div className="relative aspect-[4/5] w-full overflow-hidden">
+              <div className="relative aspect-[3/4] md:aspect-square w-full overflow-hidden">
                 <Image
                   src={item.image}
                   alt={`Slimfit natija ${item.weight}`}
                   fill
-                  sizes="(max-width: 768px) 100vw, 33vw"
                   className="object-cover group-hover:scale-105 transition-transform duration-700"
                 />
               </div>
 
-              {/* Pastki yashil natija bloki */}
-              <div className="bg-gradient-to-r from-[#97FF97] via-[#74E374] to-[#56A265] py-8 px-6 text-center">
-                <motion.div
-                  initial={{ opacity: 0, y: 10 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  className="space-y-1"
-                >
-                  <h4 className="text-[42px] md:text-[52px] font-[1000] text-slate-900 leading-none">
+              {/* Pastki natija bloki */}
+              <div className="bg-gradient-to-br from-green-500 via-green-600 to-green-700 py-5 md:py-8 px-4 text-center">
+                <div className="space-y-1">
+                  <h4 className="text-[32px] md:text-[56px] font-[1000] text-white leading-none tracking-tighter">
                     {item.weight}
                   </h4>
-                  <p className="text-[14px] md:text-[16px] font-black text-slate-900/80 uppercase tracking-widest">
+                  <p className="text-[10px] md:text-[14px] font-black text-white/90 uppercase tracking-[0.2em]">
                     {item.duration}
                   </p>
-                </motion.div>
+                </div>
               </div>
             </motion.div>
           ))}
         </div>
 
-        {/* QO'SHIMCHA ISHONCH MATNI */}
-        <motion.p
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          className="mt-16 text-center text-slate-500 font-bold text-sm md:text-base max-w-2xl mx-auto italic"
-        >
+        {/* QO'SHIMCHA MATN */}
+        <p className="mt-12 md:mt-20 text-center text-slate-400 font-bold text-[10px] md:text-[13px] max-w-2xl mx-auto italic px-8 opacity-70">
           *Natijalar individual xususiyatlarga bog'liq bo'lib, muvozanatli
-          ovqatlanish bilan birga erishilgan.
-        </motion.p>
+          ovqatlanish bilan erishilgan.
+        </p>
       </div>
     </section>
   );

@@ -1,8 +1,8 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, CheckCircle2, Loader2 } from "lucide-react";
-import toast, { Toaster } from "react-hot-toast";
+import { Snackbar } from "@/components/ui/Snackbar";
 
 export const OrderModal = ({
   isOpen,
@@ -15,18 +15,33 @@ export const OrderModal = ({
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({ name: "", phone: "+998 " });
 
-  // 1. Ismni formatlash (Birinchi harf katta)
+  // Snackbar holati
+  const [snackbar, setSnackbar] = useState({ isVisible: false, message: "" });
+
+  const showNotice = (msg: string) => {
+    setSnackbar({ isVisible: true, message: msg });
+  };
+
+  // 4 sekunddan keyin avtomatik yopish
+  useEffect(() => {
+    if (snackbar.isVisible) {
+      const timer = setTimeout(() => {
+        setSnackbar({ ...snackbar, isVisible: false });
+      }, 4000);
+      return () => clearTimeout(timer);
+    }
+  }, [snackbar.isVisible]);
+
   const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     const formattedName = value.charAt(0).toUpperCase() + value.slice(1);
     setFormData({ ...formData, name: formattedName });
   };
 
-  // 2. Telefon raqami formati: +998 99 999 99 99
   const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    let input = e.target.value.replace(/\D/g, ""); // Faqat raqamlar
+    let input = e.target.value.replace(/\D/g, "");
     if (!input.startsWith("998")) input = "998" + input;
-    input = input.substring(0, 12); // Max 12 raqam
+    input = input.substring(0, 12);
 
     let result = "+998 ";
     if (input.length > 3) {
@@ -41,128 +56,146 @@ export const OrderModal = ({
     setFormData({ ...formData, phone: result });
   };
 
-  const progress = (formData.phone.replace(/\s/g, "").length / 13) * 100;
 const handleSubmit = async (e: React.FormEvent) => {
   e.preventDefault();
-
-  // Faqat raqamlarni ajratib olamiz (masalan: 998901234567)
   const digitsOnly = formData.phone.replace(/\D/g, "");
 
-  // O'zbekiston raqami 998 bilan birga jami 12 ta raqam bo'lishi shart
   if (digitsOnly.length !== 12) {
-    toast.error("Raqamni to'liq kiriting!", { position: "bottom-right" });
+    showNotice("Raqamni to'liq kiriting!");
     return;
   }
 
   setLoading(true);
-  // Simulyatsiya (Backendga tayyor data boradi)
-  setTimeout(() => {
-    setLoading(false);
-    setStep(2);
-    toast.success("Muvaffaqiyatli qabul qilindi!", {
-      position: "bottom-right",
+
+  // --- O'ZGARTIRILGAN QISM ---
+  const payload = {
+    full_name: formData.name,
+    phone_number: `+${digitsOnly}`, // Bu yerda plyus (+) qo'shildi: +998901234567
+    product_name: "Slimfit",
+  };
+  // ---------------------------
+
+  try {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/leads/`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
     });
-  }, 2000);
+
+    if (response.ok) {
+      setStep(2);
+    } else {
+      throw new Error();
+    }
+  } catch (error) {
+    showNotice("Xatolik yuz berdi!");
+  } finally {
+    setLoading(false);
+  }
 };
 
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/50 backdrop-blur-md">
-      <Toaster />
-      <motion.div
-        initial={{ scale: 0.9, opacity: 0 }}
-        animate={{ scale: 1, opacity: 1 }}
-        className="relative w-full max-w-md bg-white rounded-[30px] shadow-2xl overflow-hidden"
-      >
-        {/* Progress Bar */}
-        <div className="absolute top-0 left-0 w-full h-1.5 bg-slate-100">
-          <motion.div
-            animate={{ width: `${progress}%` }}
-            className="h-full bg-yellow-400"
-          />
-        </div>
+    <>
+      <Snackbar
+        isVisible={snackbar.isVisible}
+        message={snackbar.message}
+        onClose={() => setSnackbar({ ...snackbar, isVisible: false })}
+      />
 
-        <div className="p-8">
-          <button
-            onClick={onClose}
-            className="absolute top-4 right-4 text-slate-400 hover:text-black transition-colors"
-          >
-            <X size={24} />
-          </button>
+      <div className="fixed inset-0 z-[1000] flex items-center justify-center p-4 bg-black/60 backdrop-blur-md">
+        <motion.div
+          initial={{ scale: 0.9, opacity: 0, y: 20 }}
+          animate={{ scale: 1, opacity: 1, y: 0 }}
+          className="relative w-full max-w-md bg-white rounded-[40px] shadow-[0_32px_64px_rgba(0,0,0,0.2)] overflow-hidden"
+        >
+          <div className="p-8 md:p-10">
+            <button
+              onClick={onClose}
+              className="absolute top-6 right-6 text-slate-300 hover:text-black transition-colors"
+            >
+              <X size={28} />
+            </button>
 
-          <AnimatePresence mode="wait">
-            {step === 1 ? (
-              <motion.form
-                key="form"
-                onSubmit={handleSubmit}
-                className="space-y-6"
-              >
-                <h2 className="text-2xl font-[1000] uppercase text-black">
-                  Buyurtma berish
-                </h2>
-                <div>
-                  <label className="text-xs font-bold text-slate-400 uppercase ml-1">
-                    Ismingiz
-                  </label>
-                  <input
-                    required
-                    className="w-full p-4 mt-1 bg-slate-50 border-2 border-transparent focus:border-yellow-400 rounded-2xl outline-none font-bold text-black"
-                    value={formData.name}
-                    onChange={handleNameChange}
-                    placeholder="Masalan: Ali"
-                  />
-                </div>
-                <div>
-                  <label className="text-xs font-bold text-slate-400 uppercase ml-1">
-                    Telefon
-                  </label>
-                  <input
-                    required
-                    type="tel" // Brauzerga bu telefon raqami ekanini bildiradi
-                    inputMode="numeric" // Mobil telefonda faqat raqamlar klaviaturasini ochadi
-                    pattern="[0-9]*" // Ba'zi eski qurilmalar uchun qo'shimcha cheklov
-                    className="w-full p-4 mt-1 bg-slate-50 border-2 border-transparent focus:border-yellow-400 rounded-2xl outline-none font-bold text-black"
-                    value={formData.phone}
-                    onChange={handlePhoneChange}
-                    placeholder="+998 90 123 45 67"
-                  />
-                </div>
-                <button
-                  disabled={loading}
-                  className="w-full py-5 bg-yellow-400 hover:bg-yellow-500 text-black font-[1000] rounded-2xl uppercase transition-all shadow-lg shadow-yellow-100 flex justify-center"
+            <AnimatePresence mode="wait">
+              {step === 1 ? (
+                <motion.form
+                  key="form"
+                  onSubmit={handleSubmit}
+                  className="space-y-6"
                 >
-                  {loading ? <Loader2 className="animate-spin" /> : "Yuborish"}
-                </button>
-              </motion.form>
-            ) : (
-              <motion.div
-                key="success"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                className="text-center py-6"
-              >
-                <CheckCircle2
-                  size={64}
-                  className="mx-auto text-green-500 mb-4"
-                />
-                <h2 className="text-2xl font-black uppercase text-black">
-                  Rahmat!
-                </h2>
-                <p className="text-slate-500 font-bold mt-2">
-                  Tez orada siz bilan bog'lanamiz.
-                </p>
-                <button
-                  onClick={onClose}
-                  className="mt-8 w-full py-4 bg-black text-white font-bold rounded-xl uppercase"
+                  <h2 className="text-3xl font-[1000] uppercase text-black tracking-tighter">
+                    Buyurtma
+                  </h2>
+
+                  <div className="space-y-4">
+                    <div>
+                      <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">
+                        Ismingiz
+                      </label>
+                      <input
+                        required
+                        className="w-full p-5 mt-1 bg-slate-50 border-2 border-transparent focus:border-yellow-400 rounded-3xl outline-none font-bold text-black transition-all"
+                        value={formData.name}
+                        onChange={handleNameChange}
+                        placeholder="Masalan: Ali"
+                      />
+                    </div>
+                    <div>
+                      <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">
+                        Telefon
+                      </label>
+                      <input
+                        required
+                        type="tel"
+                        inputMode="numeric"
+                        className="w-full p-5 mt-1 bg-slate-50 border-2 border-transparent focus:border-yellow-400 rounded-3xl outline-none font-bold text-black transition-all"
+                        value={formData.phone}
+                        onChange={handlePhoneChange}
+                      />
+                    </div>
+                  </div>
+
+                  <button
+                    disabled={loading}
+                    className="w-full py-6 bg-yellow-400 hover:bg-yellow-500 text-black font-[1000] rounded-3xl uppercase transition-all shadow-xl shadow-yellow-200 flex justify-center active:scale-[0.98] disabled:opacity-50"
+                  >
+                    {loading ? (
+                      <Loader2 className="animate-spin" />
+                    ) : (
+                      "Yuborish"
+                    )}
+                  </button>
+                </motion.form>
+              ) : (
+                <motion.div
+                  key="success"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  className="text-center py-10"
                 >
-                  Yopish
-                </button>
-              </motion.div>
-            )}
-          </AnimatePresence>
-        </div>
-      </motion.div>
-    </div>
+                  <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                    <CheckCircle2 size={48} className="text-green-600" />
+                  </div>
+                  <h2 className="text-3xl font-[1000] uppercase text-black tracking-tighter">
+                    Rahmat!
+                  </h2>
+                  <p className="text-slate-500 font-bold mt-3">
+                    Operatorimiz tez orada siz bilan bog'lanadi.
+                  </p>
+                  <button
+                    onClick={onClose}
+                    className="mt-10 w-full py-5 bg-black text-white font-black rounded-2xl uppercase tracking-widest shadow-2xl"
+                  >
+                    Yopish
+                  </button>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+        </motion.div>
+      </div>
+    </>
   );
 };
