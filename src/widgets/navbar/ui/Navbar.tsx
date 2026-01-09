@@ -2,7 +2,6 @@
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { motion, AnimatePresence } from "framer-motion";
 import { HiX } from "react-icons/hi";
 import { OrderModal } from "@/widgets/order/ui/OrderModal";
 
@@ -19,12 +18,14 @@ export const Navbar = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 
+  // Scroll hodisasi
   useEffect(() => {
-    const handleScroll = () => setScrolled(window.scrollY > 50);
+    const handleScroll = () => setScrolled(window.scrollY > 20);
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  // Body skrollni bloklash
   useEffect(() => {
     if (isOpen || isModalOpen) {
       document.body.style.overflow = "hidden";
@@ -35,109 +36,82 @@ export const Navbar = () => {
 
   return (
     <>
-      {/* 1. MOBILE MENU - HEADERDAN TASHQARIDA (Z-INDEX MUAMMOSINI YECHISH UCHUN) */}
-      <AnimatePresence>
-        {isOpen && (
-          <div className="fixed inset-0 z-[9999] lg:hidden">
-            {/* Yashilsifat xira fon */}
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
+      {/* 1. MOBILE MENU - ANIMATSIYALARSIZ */}
+      {isOpen && (
+        <div className="fixed inset-0 z-[9999] lg:hidden">
+          {/* Fon */}
+          <div
+            onClick={() => setIsOpen(false)}
+            className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+          />
+
+          {/* Panel */}
+          <div className="absolute top-0 right-0 h-full w-[80%] max-w-[400px] bg-white p-8 pt-24 flex flex-col shadow-2xl">
+            <button
               onClick={() => setIsOpen(false)}
-              className="absolute inset-0 bg-green-950/60 backdrop-blur-md"
-            />
-
-            {/* Panel */}
-            <motion.div
-              initial={{ x: "100%" }}
-              animate={{ x: 0 }}
-              exit={{ x: "100%" }}
-              transition={{ type: "spring", damping: 25, stiffness: 200 }}
-              className="absolute top-0 right-0 h-full w-[85%] bg-white p-8 pt-32 flex flex-col shadow-[-20px_0_60px_rgba(0,0,0,0.3)]"
+              className="absolute top-6 right-6 w-12 h-12 flex items-center justify-center bg-gray-100 rounded-full text-black"
             >
-              <button
-                onClick={() => setIsOpen(false)}
-                className="absolute top-8 right-8 w-12 h-12 flex items-center justify-center bg-slate-100 rounded-full text-black"
-              >
-                <HiX size={30} />
-              </button>
+              <HiX size={28} />
+            </button>
 
-              <div className="mb-12 relative w-60 h-36">
-                <Image
-                  src="/logos.png"
-                  alt="Logo"
-                  fill
-                  className="object-cover"
-                />
-              </div>
+            <div className="mb-10 relative w-full h-20">
+              <Image
+                src="/logos.png"
+                alt="Logo"
+                fill
+                className="object-contain"
+              />
+            </div>
 
-              <ul className="flex flex-col gap-8">
-                {navLinks.map((link, idx) => (
-                  <motion.li
-                    key={link.name}
-                    initial={{ opacity: 0, x: 20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: idx * 0.1 }}
-                  >
-                    <Link
-                      href={link.href}
-                      onClick={() => setIsOpen(false)}
-                      className="text-xl font-[1000] text-black uppercase tracking-tighter"
-                    >
-                      {link.name}
-                    </Link>
-                  </motion.li>
-                ))}
-              </ul>
-
-              <div className="mt-auto pb-6">
-                <button
-                  onClick={() => {
-                    setIsOpen(false);
-                    setIsModalOpen(true);
-                  }}
-                  className="relative group overflow-hidden w-full bg-green-600 text-white py-6 rounded-2xl flex items-center justify-center text-xl font-[1000] uppercase tracking-widest shadow-2xl"
+            <nav className="flex flex-col gap-6">
+              {navLinks.map((link) => (
+                <Link
+                  key={link.name}
+                  href={link.href}
+                  onClick={() => setIsOpen(false)}
+                  className="text-2xl font-black text-slate-900 uppercase tracking-tighter"
                 >
-                  <span className="z-10">Sotib olish</span>
-                  <motion.div
-                    animate={{ x: ["-200%", "200%"] }}
-                    transition={{
-                      repeat: Infinity,
-                      duration: 2,
-                      ease: "linear",
-                    }}
-                    className="absolute top-0 h-full w-[60px] bg-white/30 skew-x-[-25deg] blur-lg"
-                  />
-                </button>
-              </div>
-            </motion.div>
-          </div>
-        )}
-      </AnimatePresence>
+                  {link.name}
+                </Link>
+              ))}
+            </nav>
 
-      {/* 2. TOP DECORATION */}
-      <div className="absolute -top-[80px] right-[5%] w-[90%] md:-top-[150px] md:right-[12%] md:w-[45%] h-[250px] md:h-[450px] pointer-events-none z-[1] overflow-hidden">
-        <div className="relative w-full h-full">
+            <div className="mt-auto pb-10">
+              <button
+                onClick={() => {
+                  setIsOpen(false);
+                  setIsModalOpen(true);
+                }}
+                className="w-full bg-green-600 text-white py-5 rounded-2xl text-xl font-black uppercase tracking-widest"
+              >
+                Sotib olish
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* 2. TOP DECO - Desktop uchun */}
+      <div className="absolute -top-[50px] right-0 w-[45%] h-[300px] pointer-events-none z-[1] hidden md:block">
+        <div className="relative w-full h-full opacity-40">
           <Image
             src="/metrtop.png"
             alt="Deco"
             fill
-            className="object-contain object-right-top scale-125"
-            priority
+            className="object-contain object-right-top"
           />
         </div>
       </div>
 
       {/* 3. ASOSIY HEADER */}
       <header
-        className={`fixed top-0 left-0 w-full z-[1000] transition-all duration-500 ${
-          scrolled ? "bg-white shadow-lg py-2" : "bg-transparent py-8"
+        className={`fixed top-0 left-0 w-full z-[1000] transition-all duration-300 ${
+          scrolled ? "bg-white shadow-md py-3" : "bg-transparent py-6"
         }`}
       >
-        <div className="container mx-auto px-4 md:px-6 flex items-center justify-between">
-          <Link href="/" className="relative">
-            <div className="relative w-[180px] h-[70px] md:w-[250px] md:h-[80px]">
+        <div className="container mx-auto px-4 flex items-center justify-between">
+          <Link href="/" className="relative z-10">
+            <div className="relative w-[140px] h-[50px] md:w-[200px] md:h-[60px]">
               <Image
                 src="/logos.png"
                 alt="Logo"
@@ -148,13 +122,14 @@ export const Navbar = () => {
             </div>
           </Link>
 
+          {/* Desktop Nav */}
           <nav className="hidden lg:flex items-center gap-10">
             <ul className="flex items-center gap-8">
               {navLinks.map((link) => (
                 <li key={link.name}>
                   <Link
                     href={link.href}
-                    className="text-[14px] font-black uppercase text-slate-800 hover:text-green-600 transition-colors"
+                    className="text-sm font-bold uppercase text-slate-800 hover:text-green-600 transition-colors"
                   >
                     {link.name}
                   </Link>
@@ -163,34 +138,25 @@ export const Navbar = () => {
             </ul>
             <button
               onClick={() => setIsModalOpen(true)}
-              className="group relative overflow-hidden bg-green-600 px-10 py-4 rounded-full text-[13px] font-black uppercase text-white shadow-xl active:scale-95"
+              className="bg-green-600 px-8 py-3 rounded-full text-sm font-black uppercase text-white hover:bg-green-700 transition-colors shadow-lg"
             >
-              <span className="relative z-10">Sotib olish</span>
-              <motion.div
-                animate={{ x: ["-150%", "150%"] }}
-                transition={{
-                  repeat: Infinity,
-                  duration: 2,
-                  ease: "linear",
-                  repeatDelay: 1,
-                }}
-                className="absolute top-0 h-full w-[40px] bg-white/40 skew-x-[-20deg] blur-md"
-              />
+              Sotib olish
             </button>
           </nav>
 
+          {/* Burger Button */}
           <button
             onClick={() => setIsOpen(true)}
-            className="lg:hidden w-14 h-14 bg-slate-900 rounded-xl flex flex-col items-center justify-center gap-1.5 shadow-2xl border-2 border-green-500"
+            className="lg:hidden w-12 h-12 bg-slate-900 rounded-xl flex flex-col items-center justify-center gap-1.5 border-2 border-green-500"
           >
-            <span className="w-8 h-1.5 bg-green-500 rounded-full" />
-            <span className="w-10 h-1.5 bg-white rounded-full" />
-            <span className="w-6 h-1.5 bg-green-500 rounded-full self-end mr-2" />
+            <span className="w-6 h-1 bg-green-500 rounded-full" />
+            <span className="w-8 h-1 bg-white rounded-full" />
+            <span className="w-5 h-1 bg-green-500 rounded-full" />
           </button>
         </div>
       </header>
 
-      {/* 4. ORDER MODAL (ENG TEPADA TURADI) */}
+      {/* 4. ORDER MODAL */}
       <OrderModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
     </>
   );

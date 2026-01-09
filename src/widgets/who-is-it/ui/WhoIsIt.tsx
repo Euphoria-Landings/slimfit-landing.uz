@@ -18,7 +18,7 @@ const features = [
     text: "Modda almashinuvini qo'llab-quvvatlashni xohlasa",
   },
   {
-    image: "/smile.png",
+    image: "/plantatsiya.png",
     text: "O'z farovonligiga e'tibor bersa",
   },
   {

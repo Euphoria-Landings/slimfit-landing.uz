@@ -29,8 +29,6 @@ export const Hero = () => {
           {/* MATNLI QISM */}
           <div className="pb-16 lg:pb-0 lg:py-40 relative z-20">
             <motion.h1
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
               className="text-[32px] md:text-6xl lg:text-[68px] font-black text-slate-900 leading-[1.05] mb-4 text-center lg:text-left lg:max-w-[120%]"
             >
               Slimfit — vazn nazoratini <br className="hidden lg:block" />{" "}
@@ -38,9 +36,6 @@ export const Hero = () => {
             </motion.h1>
 
             <motion.p
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2 }}
               className="text-base md:text-xl text-slate-800 font-medium mb-8 text-center lg:text-left"
             >
               Arizangizni qoldiring va 100% chegirma oling!
@@ -104,9 +99,6 @@ export const Hero = () => {
           {/* RASMLI QISM */}
           <div className="relative h-[450px] md:h-[650px] lg:h-[850px] flex items-end justify-center pt-24 lg:pt-0 z-10">
             <motion.div
-              initial={{ opacity: 0, x: 50 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.8 }}
               className="relative w-full h-full"
             >
               <Image
