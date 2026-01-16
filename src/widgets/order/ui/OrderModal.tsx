@@ -56,43 +56,49 @@ export const OrderModal = ({
     setFormData({ ...formData, phone: result });
   };
 
-const handleSubmit = async (e: React.FormEvent) => {
-  e.preventDefault();
-  const digitsOnly = formData.phone.replace(/\D/g, "");
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const digitsOnly = formData.phone.replace(/\D/g, "");
 
-  if (digitsOnly.length !== 12) {
-    showNotice("Raqamni to'liq kiriting!");
-    return;
-  }
-
-  setLoading(true);
-
-  // --- O'ZGARTIRILGAN QISM ---
-  const payload = {
-    full_name: formData.name,
-    phone_number: `+${digitsOnly}`, // Bu yerda plyus (+) qo'shildi: +998901234567
-    product_name: "Slimfit",
-  };
-  // ---------------------------
-
-  try {
-    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/leads/`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload),
-    });
-
-    if (response.ok) {
-      setStep(2);
-    } else {
-      throw new Error();
+    if (digitsOnly.length !== 12) {
+      showNotice("Raqamni to'liq kiriting!");
+      return;
     }
-  } catch (error) {
-    showNotice("Xatolik yuz berdi!");
-  } finally {
-    setLoading(false);
-  }
-};
+
+    setLoading(true);
+
+    const payload = {
+      full_name: formData.name,
+      phone_number: `+${digitsOnly}`,
+      product_name: "Slimfit",
+    };
+
+    try {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/leads/`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+        }
+      );
+
+      if (response.ok) {
+        setStep(2);
+      } else if (response.status === 429) {
+        // --- 429 TOO MANY REQUESTS LOGIKASI ---
+        showNotice(
+          "Siz allaqachon ariza qoldirgansiz. Iltimos, 1 soatdan keyin qayta urinib ko'ring."
+        );
+      } else {
+        throw new Error();
+      }
+    } catch (error) {
+      showNotice("Xatolik yuz berdi! Server bilan bog'lanib bo'lmadi.");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   if (!isOpen) return null;
 
